@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Name</title>
+    {% csrf_token %}
+    <meta name="csrf-token" content="{{ csrf_token }}">
+</head>
+<body>
+    <h1>Add New Name</h1>
+    <form id="nameForm">
+        <label>First Name:</label>
+        <input type="text" id="firstName" required><br>
+
+        <label>Last Name:</label>
+        <input type="text" id="lastName" required><br>
+
+        <label>Education:</label>
+        <select id="education">
+            {% for degree in degrees %}
+                <option value="{{ degree.id }}">{{ degree.degree }}</option>
+            {% endfor %}
+        </select><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        // CSRF helper (in case cookie token is needed)
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrfToken = getCookie('csrftoken');
+
+        document.getElementById('nameForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const data = {
+                first_name: document.getElementById('firstName').value,
+                last_name: document.getElementById('lastName').value,
+                education: document.getElementById('education').value
+            };
+
+            fetch('/api/entry/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to submit');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('result').innerHTML =
+                    `Successfully added: ${data.first_name} ${data.last_name} (${data.education_degree})`;
+            })
+            .catch(error => {
+                document.getElementById('result').innerHTML = 'Error: ' + error;
+            });
+        });
+    </script>
+</body>
+</html>

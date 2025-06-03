@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Names</title>
+</head>
+<body>
+    <h1>Search Names</h1>
+    <input type="text" id="searchInput" placeholder="Enter name...">
+    <button onclick="search()">Search</button>
+
+    <ul id="resultsList"></ul>
+
+    <script>
+        function search() {
+            const query = document.getElementById('searchInput').value;
+
+            fetch(`/api/search/?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    const resultsList = document.getElementById('resultsList');
+                    resultsList.innerHTML = '';
+                    data.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = `${item.first_name} ${item.last_name} (${item.education_degree})`;
+                        resultsList.appendChild(li);
+                    });
+                })
+                .catch(error => {
+                    document.getElementById('resultsList').innerHTML = 'Error: ' + error;
+                });
+        }
+
+        // Load all on first page load
+        window.onload = search;
+    </script>
+</body>
+</html>
