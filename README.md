@@ -20,6 +20,6 @@ A simple Django App HTML frontend for adding names to the database via API. It a
 ### Education Options (`GET /api/education/`)
 ```json
 [
-    {"id": 1, "degree": "BA"},
-    {"id": 2, "degree": "BS"}
+    {"id": 3, "degree": "BBA"},
+    {"id": 4, "degree": "BE"}
 ]
