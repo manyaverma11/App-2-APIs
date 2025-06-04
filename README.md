@@ -1,4 +1,4 @@
-# Name Entry Application
+# Data Entry Application
 A simple Django App HTML frontend for adding names to the database via API. It also helps in searching of entries using keywords via another API.
 
 ## Features
